@@ -1,11 +1,11 @@
 # Don't track content of these folders
 #node_modules/
 #data/
-*.csv
+#*.csv
 
 # Raw Data #
 ############
-*.csv
+#*.csv
 
 
 # Compiled source #
