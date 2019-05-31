@@ -1,4 +1,5 @@
 import pandas as pd
+import csv
 #import matplotlib.pyplot as plt
 import sklearn as sl
 from sklearn.preprocessing import OneHotEncoder
@@ -53,22 +54,36 @@ def read_special_list(string):
     return lst2
 
 def get_data_pure():
-    return pd.read_csv('data/train2.csv', dtype="str", sep=",")
-
+    #csv.register_dialect('myDialect',delimiter = ',',quoting=csv.QUOTE_ALL,skipinitialspace=True)
+    #with open('data_raw/train2.csv', 'r') as f:
+    #    reader = csv.reader(f, dialect='myDialect')
+    #    for row in reader:
+    #        print(row[10])
+    df = pd.read_csv('data_raw/train2.csv', skipinitialspace=True,dtype="str", sep=",", quoting=csv.QUOTE_ALL, engine="python", quotechar='"', encoding="utf-8").replace('"','', regex=True)#delimiter="\n"
+    return df
 def get_data_preprocessed():
     ds = get_data_pure()
+    ds = ds[0]
+
+    print("columns taken\n",ds.head(10))
+    #print(ds.columns)
     #print(ds)
     #s= ds.columns
     #print(s)
-    features = "user_id,session_id,timestamp,step,action_type,reference,platform,city,device,current_filters,impressions,prices"
+    features = 'user_id,session_id,timestamp,step,action_type,reference,platform,city,device,current_filters,impressions,prices'
+    features2= "user_id,session_id,timestamp,step,action_type,reference,platform,city,device,current_filters,impressions,prices"
     #s.replace('"', '')
     columns = features.split(",")
-    print(columns)
+    #print(columns)
     #print(ds)
-    prices = ds.prices#.apply(lambda x: x.split()[0])
-    id = ds.user_id
+    #ds.columns=columns
+    #print(ds.columns)
+    print("columns given\n",ds.head(10))
+    #prices = ds.prices#.apply(lambda x: x.split()[0])
+    #print (prices)
+    #id = ds.user_id
     #ds = ds.drop(["id","carName"], axis=1)
-    cols = ds.columns
+    #cols = ds.columns
     #print (brand_names)
     #ds.brand = brand_names
     #print(ds)
@@ -76,9 +91,9 @@ def get_data_preprocessed():
     #ds.loc[ds['brand'] == '', 'brand'] = ds.carName.str.split().str.get(0)
     #col = ds.columns
 
-    columns = ds.columns
-    for c in columns:
-        ds[c] = ds.apply(lambda row: missing_unknown(row[c]), axis=1)
+    #columns = ds.columns
+    #for c in columns:
+        #ds[c] = ds.apply(lambda row: missing_unknown(row[c]), axis=1)
         #ds[c] = ds[c].astype("float")
         #print (c)
 
@@ -110,8 +125,8 @@ def get_data_preprocessed():
     #brands = ds["carName"].unique()
     #for brand in brands:
     #    ds[brand] = ds.apply(lambda row: is_class_str(row["carName"], brand), axis=1)
-    print(ds)
-    ds.to_csv("preprocessed.csv", sep=',', index=False)
+    #print(ds)
+    ds.to_csv("data_prepro/preprocessed.csv", sep=',', index=False)
     return ds
 
 def main():
