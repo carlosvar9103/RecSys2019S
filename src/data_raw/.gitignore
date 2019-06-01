@@ -5,6 +5,8 @@
 # Raw Data #
 ############
 original*.csv
+test.csv
+train.csv
 
 
 # Compiled source #

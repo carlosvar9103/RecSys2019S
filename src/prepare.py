@@ -5,33 +5,6 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import SimpleImputer
 import numpy as np
 
-def compute_quartal(pd_data_frame, column_name):
-    """
-    This funciton should change the year from floating point format to user friendly format. For example 2011.241783 should be changed to 2011 Q1 and 2014.75 should be changed to 2014 Q3
-    :param pd_data_frame: padas data set to be changed
-    :param column_name: name of the column where the year is saved
-    :return: nothing. We work on the data referenced.
-    """
-    pd_data_frame[column_name].astype(str)
-    for i in range(0, pd_data_frame[column_name].size):
-        if (str(pd_data_frame[column_name][i]).find("Q") >= 0):
-            continue
-
-        temp = (float(pd_data_frame[column_name][i]) * 100) % 100
-        if (temp < 25):
-            pd_data_frame.loc[pd_data_frame[column_name] == pd_data_frame[column_name][i], column_name] = str(
-                int(pd_data_frame[column_name][i])) + " Q1"
-        elif (temp < 50):
-            pd_data_frame.loc[pd_data_frame[column_name] == pd_data_frame[column_name][i], column_name] = str(
-                int(pd_data_frame[column_name][i])) + " Q2"
-        elif (temp < 75):
-            pd_data_frame.loc[pd_data_frame[column_name] == pd_data_frame[column_name][i], column_name] = str(
-                int(pd_data_frame[column_name][i])) + " Q3"
-        else:
-            pd_data_frame.loc[pd_data_frame[column_name] == pd_data_frame[column_name][i], column_name] = str(
-                int(pd_data_frame[column_name][i])) + " Q4"
-
-
 def count_param(row, param):
     print(row)
     return row.lower().count(param)
