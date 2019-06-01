@@ -5,12 +5,12 @@ import pandas as pd
 import numpy as np
 
 current_directory = Path(__file__).absolute().parent
-default_data_directory = current_directory.joinpath('..', '..', 'data')
+default_data_directory = current_directory.joinpath('data')#, '..', 'data')
 
 
 @click.command()
 @click.option('--data-path', default=None, help='Directory for the CSV files')
-@click.option('--test-file', default='test.csv', help='Test CSV file')
+@click.option('--test-file', default='test2.csv', help='Test CSV file')
 def main(data_path, test_file):
 
     # calculate path to files
@@ -21,8 +21,10 @@ def main(data_path, test_file):
 
     print('Reading files...')
     df_test = pd.read_csv(test_csv)
+    print(df_test)
     mask_click_out = df_test["action_type"] == "clickout item"
     df_clicks = df_test[mask_click_out]
+    #print (df_clicks)
 
     mask_ground_truth = df_clicks["reference"].notnull()
     df_gt = df_clicks[mask_ground_truth]

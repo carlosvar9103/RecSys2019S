@@ -5,6 +5,7 @@ import sklearn as sl
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import SimpleImputer
 import numpy as np
+import random
 
 def count_param(row, param):
     print(row)
@@ -45,6 +46,13 @@ def yes_no_unknown(row):
     else:
         return None
 
+def randon_list(max,ds):
+    randoms = []
+    for n in range(max):
+        r = random.randint(0,ds.shape[0])
+    return randoms
+
+
 def read_special_list(string):
     lst = string.split("||")
     lst2 = []
@@ -59,26 +67,37 @@ def get_data_pure():
     #    reader = csv.reader(f, dialect='myDialect')
     #    for row in reader:
     #        print(row[10])
-    df = pd.read_csv('data_raw/train2.csv', skipinitialspace=True,dtype="str", sep=",", quoting=csv.QUOTE_ALL, engine="python", quotechar='"', encoding="utf-8").replace('"','', regex=True)#delimiter="\n"
+    df = pd.read_csv('data_raw/original_train.csv', skipinitialspace=True,dtype="str", sep=",", encoding="utf-8")#.replace('"','', regex=True)#quotcechar='"',delimiter="\n",quoting=csv.QUOTE_ALL, engine="python"
     return df
+
+def smaller_data_set(ds,samples):
+    rr = random.sample(range(0,ds.shape[0]),samples)
+    ds = ds.iloc[rr,:]
+    return ds
+
 def get_data_preprocessed():
     ds = get_data_pure()
-    ds = ds[0]
+    ds = smaller_data_set(ds,3333)
+    print (ds.head(10),ds.shape)
 
-    print("columns taken\n",ds.head(10))
+
+
+
+    #print(ds.tail(10))
+    #print (ds.shape[0])
     #print(ds.columns)
     #print(ds)
     #s= ds.columns
     #print(s)
-    features = 'user_id,session_id,timestamp,step,action_type,reference,platform,city,device,current_filters,impressions,prices'
-    features2= "user_id,session_id,timestamp,step,action_type,reference,platform,city,device,current_filters,impressions,prices"
+    #features = 'user_id,session_id,timestamp,step,action_type,reference,platform,city,country,device,current_filters,impressions,prices'
+    #features2= "user_id,session_id,timestamp,step,action_type,reference,platform,city,device,current_filters,impressions,prices"
     #s.replace('"', '')
-    columns = features.split(",")
+    #columns = features.split(",")
     #print(columns)
     #print(ds)
     #ds.columns=columns
     #print(ds.columns)
-    print("columns given\n",ds.head(10))
+    #print("columns given\n",ds.head(10))
     #prices = ds.prices#.apply(lambda x: x.split()[0])
     #print (prices)
     #id = ds.user_id
@@ -127,6 +146,7 @@ def get_data_preprocessed():
     #    ds[brand] = ds.apply(lambda row: is_class_str(row["carName"], brand), axis=1)
     #print(ds)
     ds.to_csv("data_prepro/preprocessed.csv", sep=',', index=False)
+    print("done")
     return ds
 
 def main():
