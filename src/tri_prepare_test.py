@@ -35,11 +35,11 @@ def nan_unknown(row):
     else:
         return row
 
-def missing_unknown(value):
-    if value == "":
+def missing_unknown(row):
+    if row == "":
         return None
     else:
-        return value
+        return row
 
 def yes_no_unknown(row):
     if row == "y":
@@ -49,13 +49,6 @@ def yes_no_unknown(row):
     else:
         return None
 
-def randon_list(max,ds):
-    randoms = []
-    for n in range(max):
-        r = random.randint(0,ds.shape[0])
-    return randoms
-
-
 def read_special_list(string):
     lst = string.split("||")
     lst2 = []
@@ -63,6 +56,12 @@ def read_special_list(string):
         x = x[x.rfind(":")+1:]
         lst2.append(x)
     return lst2
+
+def randon_list(max,ds):
+    randoms = []
+    for n in range(max):
+        r = random.randint(0,ds.shape[0])
+    return randoms
 
 def get_data_pure():
     #csv.register_dialect('myDialect',delimiter = ',',quoting=csv.QUOTE_ALL,skipinitialspace=True)
