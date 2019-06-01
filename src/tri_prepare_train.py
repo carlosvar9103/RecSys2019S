@@ -77,7 +77,7 @@ def smaller_data_set(ds,samples):
 def get_data_preprocessed():
     ds = get_data_pure()
     ds = smaller_data_set(ds,3333)
-    #print (ds.head(10),ds.shape)
+    print (ds.head(5),ds.shape)
 
 
 

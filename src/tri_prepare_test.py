@@ -7,6 +7,9 @@ from sklearn.impute import SimpleImputer
 import numpy as np
 import random
 
+input_path = "data_raw"
+target_path = "data_prepro"
+
 def count_param(row, param):
     print(row)
     return row.lower().count(param)
@@ -32,11 +35,11 @@ def nan_unknown(row):
     else:
         return row
 
-def missing_unknown(row):
-    if row == "":
+def missing_unknown(value):
+    if value == "":
         return None
     else:
-        return row
+        return value
 
 def yes_no_unknown(row):
     if row == "y":
@@ -67,7 +70,7 @@ def get_data_pure():
     #    reader = csv.reader(f, dialect='myDialect')
     #    for row in reader:
     #        print(row[10])
-    df = pd.read_csv('data_raw/original_test.csv', skipinitialspace=True,dtype="str", sep=",", encoding="utf-8")#.replace('"','', regex=True)#quotcechar='"',delimiter="\n",quoting=csv.QUOTE_ALL, engine="python"
+    df = pd.read_csv(input_path+'/test.csv', skipinitialspace=True,dtype="str", sep=",", encoding="utf-8")#.replace('"','', regex=True)#quotcechar='"',delimiter="\n",quoting=csv.QUOTE_ALL, engine="python"
     return df
 
 def smaller_data_set(ds,samples):
@@ -78,7 +81,7 @@ def smaller_data_set(ds,samples):
 def get_data_preprocessed():
     ds = get_data_pure()
     ds = smaller_data_set(ds,3333)
-    print (ds.head(10),ds.shape)
+    print (ds.head(5),ds.shape)
 
 
 
@@ -145,7 +148,7 @@ def get_data_preprocessed():
     #for brand in brands:
     #    ds[brand] = ds.apply(lambda row: is_class_str(row["carName"], brand), axis=1)
     #print(ds)
-    ds.to_csv("data_prepro/preprocessed_test.csv", sep=',', index=False)
+    ds.to_csv(target_path+'/preprocessed_test.csv', sep=',', index=False)
     print("done")
     return ds
 
