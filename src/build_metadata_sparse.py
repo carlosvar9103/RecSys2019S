@@ -24,14 +24,14 @@ def get_data_preprocessed():
     ds = get_data_pure()
 
     ###JUST USE THIS TO WORK WITH A SMALLER item_metadata.csv DATASET###
-    samples = round(len(ds)*0.001)
-    print(samples)
-    ds = smaller_data_set(ds,samples)
+    #samples = round(len(ds)*0.001)
+    #print(samples)
+    #ds = smaller_data_set(ds,samples)
     #####END#####
 
     index = ds.index
     items = ds.item_id
-    #print(ds)
+    print(ds.shape)
 
     x = ds.set_index('item_id', drop=False, append=True).properties.str.split('|', expand=True).stack()
     #print(x.head(100))
