@@ -7,8 +7,8 @@ from sklearn.impute import SimpleImputer
 import numpy as np
 import random
 
-input_path = "data_raw"
-target_path = "data_prepro"
+input_path = "data_raw/"
+target_path = "data_prepro/"
 
 def count_param(row, param):
     print(row)
@@ -49,6 +49,13 @@ def yes_no_unknown(row):
     else:
         return None
 
+def randon_list(max,ds):
+    randoms = []
+    for n in range(max):
+        r = random.randint(0,ds.shape[0])
+    return randoms
+
+
 def read_special_list(string):
     lst = string.split("||")
     lst2 = []
@@ -57,19 +64,9 @@ def read_special_list(string):
         lst2.append(x)
     return lst2
 
-def randon_list(max,ds):
-    randoms = []
-    for n in range(max):
-        r = random.randint(0,ds.shape[0])
-    return randoms
-
 def get_data_pure():
-    #csv.register_dialect('myDialect',delimiter = ',',quoting=csv.QUOTE_ALL,skipinitialspace=True)
-    #with open('data_raw/train2.csv', 'r') as f:
-    #    reader = csv.reader(f, dialect='myDialect')
-    #    for row in reader:
-    #        print(row[10])
-    df = pd.read_csv(input_path+'/test.csv', skipinitialspace=True,dtype="str", sep=",", encoding="utf-8")#.replace('"','', regex=True)#quotcechar='"',delimiter="\n",quoting=csv.QUOTE_ALL, engine="python"
+
+    df = pd.read_csv(input_path+'item_metadata.csv',dtype="str", sep=",", encoding="utf-8")
     return df
 
 def smaller_data_set(ds,samples):
@@ -77,11 +74,64 @@ def smaller_data_set(ds,samples):
     ds = ds.iloc[rr,:]
     return ds
 
+def generate_ds_sparse(ds,p_unique):
+
+    item_id = ds.item_id
+    ds.index
+    zeros = np.zeros((len(item_id), len(p_unique)), dtype=int)
+    zeros = pd.DataFrame(zeros,index=ds.index)
+    #zeros = pd.DataFrame(zeros,index=zeros[:,0])
+    zeros = pd.concat([item_id,zeros], axis=1)
+    columns = p_unique.insert(0,'item_id')
+    columns = p_unique#.insert(0,'item_id')
+    #columns = pd.concat(['item_id',p_unique], axis=1)
+    print(columns)
+    zeros.columns = columns
+
+
+
+    return zeros
+
+def fill_ds_sparse(ds_sparse,properties):
+
+            #for row in ds_sparse:
+                #for k in properties:
+
+    return ds_sparse
+
+
+
+
 def get_data_preprocessed():
     ds = get_data_pure()
+    items_id = ds.item_id
+    properties = ds.properties.str.split("|")
+    properties2 = dict(zip(items_id,properties)) #in case
+
+    #p = properties.str.split("|")
+    p_unique = []
+
+    for p in properties:
+        for r in p:
+            if r not in p_unique:
+                p_unique.append(r)
+
+    meta_sparse = generate_ds_sparse(ds,p_unique)
+
+    matrix_sparse = fill_ds_sparse(meta_sparse,properties)
+
+    print(meta_sparse,meta_sparse.shape)
+    #unique_p = list(set().union(p))
+    #print(p_unique)
+
+    '''
+    for row in properties:
+        properties_unique = row.split("|")
+    '''
+    '''
     ds = smaller_data_set(ds,3333)
     print (ds.head(5),ds.shape)
-
+    '''
 
 
 
@@ -147,13 +197,12 @@ def get_data_preprocessed():
     #for brand in brands:
     #    ds[brand] = ds.apply(lambda row: is_class_str(row["carName"], brand), axis=1)
     #print(ds)
-    ds.to_csv(target_path+'/preprocessed_test.csv', sep=',', index=False)
-    print("done")
-    return ds
+    #ds.to_csv(target_path+'/preprocessed.csv', sep=',', index=False)
+    return "done"
 
 def main():
 
-    get_data_preprocessed()
+    print(get_data_preprocessed())
     exit()
 
 

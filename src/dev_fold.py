@@ -1,19 +1,23 @@
 import pandas as pd
-import sys
 import numpy as np
+import sys
 
+input_path = "data_prepro/"
+target_path = "data_prepro/"
+name_train = "sub_train.csv"
 
-np.random.seed(1428)
-df = pd.read_csv('preprocessed.csv', dtype="str")
+df = pd.read_csv(input_path+name_train,dtype="str", sep=",", encoding="utf-8", skipinitialspace=True)
 
-msk = np.random.rand(len(df)) <= 0.95
-# Split the data into train and test
+msk = np.random.rand(len(df)) <= 0.90 # Split the data into train and dev
 
 train = df[msk]
-test = df[~msk]
-train.to_csv('preprocessed_training_1.csv' ,   index=False)
-test.to_csv('preprocessed_test_1.csv',   index=False)
+dev = df[~msk]
+print(train.shape)
+print(dev.shape)
+train.to_csv(target_path+'train_sub_train.csv' ,   index=False)
+dev.to_csv(target_path+'dev_sub_train.csv',   index=False)
 
+'''
 msk = np.random.rand(len(df)) <= 0.85
 train = df[msk]
 test = df[~msk]
@@ -67,8 +71,6 @@ train = df[msk]
 test = df[~msk]
 train.to_csv('preprocessed_training_10.csv' ,   index=False)
 test.to_csv('preprocessed_test_10.csv',   index=False)
-
-
-
+'''
 
 sys.exit()
