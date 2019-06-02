@@ -101,12 +101,13 @@ def get_data_preprocessed():
 
     print("reading raw data..")
     ds = get_data_pure()
-    
+
     ###JUST TO SEE IF THIS WORKS###
     samples = round(len(ds)*0.001)
     print(samples)
     ds = smaller_data_set(ds,samples)
     #####END####
+
     index = ds.index
     items = ds.item_id
     #print(ds)
