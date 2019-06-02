@@ -1,11 +1,13 @@
 import pandas as pd
 import csv
 #import matplotlib.pyplot as plt
-import sklearn as sl
-from sklearn.preprocessing import OneHotEncoder
-from sklearn.impute import SimpleImputer
+#import sklearn as sl
+#from sklearn.preprocessing import OneHotEncoder
+#from sklearn.impute import SimpleImputer
 import numpy as np
 import random
+
+random.seed(3333)
 
 input_path = "data_raw/"
 target_path = "data_prepro/"
@@ -66,8 +68,8 @@ def read_special_list(string):
 
 def get_data_pure():
 
-    df = pd.read_csv(input_path+'item_metadata.csv',dtype="str", sep=",", encoding="utf-8")
-    return df
+    ds = pd.read_csv(input_path+'item_metadata.csv',dtype="str", sep=",", encoding="utf-8")
+    return ds
 
 def smaller_data_set(ds,samples):
     rr = random.sample(range(0,ds.shape[0]),samples)
@@ -77,127 +79,69 @@ def smaller_data_set(ds,samples):
 def generate_ds_sparse(ds,p_unique):
 
     item_id = ds.item_id
-    ds.index
+    index = ds.index
     zeros = np.zeros((len(item_id), len(p_unique)), dtype=int)
-    zeros = pd.DataFrame(zeros,index=ds.index)
-    #zeros = pd.DataFrame(zeros,index=zeros[:,0])
+    zeros = pd.DataFrame(zeros,index=index)
     zeros = pd.concat([item_id,zeros], axis=1)
-    columns = p_unique.insert(0,'item_id')
-    columns = p_unique#.insert(0,'item_id')
-    #columns = pd.concat(['item_id',p_unique], axis=1)
-    print(columns)
+    p_unique.insert(0,'item_id')
+    columns = p_unique
     zeros.columns = columns
-
-
-
+    #print(columns)
     return zeros
 
 def fill_ds_sparse(ds_sparse,properties):
-
-            #for row in ds_sparse:
-                #for k in properties:
-
+    ds_sparse = ds_sparse
+    #for row in ds_sparse:
+    #    for k in properties:
+    #        break
     return ds_sparse
 
 
-
-
 def get_data_preprocessed():
+
+    print("reading raw data..")
     ds = get_data_pure()
-    items_id = ds.item_id
-    properties = ds.properties.str.split("|")
-    properties2 = dict(zip(items_id,properties)) #in case
+    
+    ###JUST TO SEE IF THIS WORKS###
+    samples = round(len(ds)*0.001)
+    print(samples)
+    ds = smaller_data_set(ds,samples)
+    #####END####
+    index = ds.index
+    items = ds.item_id
+    #print(ds)
+
+
+    #x = ds.set_index('item_id').properties.str.split('|', expand=True).stack().reset_index(level=1, drop=True).to_frame('properties')
+    #x = ds.set_index('item_id').properties.str.split('|', expand=True).stack()
+    x = ds.set_index('item_id', drop=False, append=True).properties.str.split('|', expand=True).stack()
+    #x = ds.groupby(level=0).apply(lambda group: pd.Series(group.values.ravel().tolist()[0].split('|')))
+    #print(x.head(100))
+    print ("creating sparse matrix..")
+
+    #pd.get_dummies(x, prefix='p', columns=['properties']).groupby(level=0).sum()
+    #xx = pd.get_dummies(x, prefix=None, prefix_sep=None).groupby(level=0).agg(max)#sum()
+    ds_sparse_matrix = pd.get_dummies(x, prefix=None, prefix_sep=None).groupby(level=1, sort=False).agg(max)#sum()
+    #itemxx = xx.index
+    ds_sparse_matrix.index = index
+    ds_sparse_matrix['item_id'] = items
+    columns = ds_sparse_matrix.columns.tolist()
+    del columns[-1]
+    columns.insert(0,'item_id')
+    #print(columns)
+    ds_sparse_matrix = ds_sparse_matrix[columns]
+
+    print (ds_sparse_matrix.head(10))
+
+    #items_id = ds.item_id
+    #properties = ds.properties.str.split("|")
+    #properties2 = dict(zip(items_id,properties)) #in case
 
     #p = properties.str.split("|")
-    p_unique = []
+    #p_unique = []
+    #meta_sparse = generate_ds_sparse(ds,p_unique)
 
-    for p in properties:
-        for r in p:
-            if r not in p_unique:
-                p_unique.append(r)
-
-    meta_sparse = generate_ds_sparse(ds,p_unique)
-
-    matrix_sparse = fill_ds_sparse(meta_sparse,properties)
-
-    print(meta_sparse,meta_sparse.shape)
-    #unique_p = list(set().union(p))
-    #print(p_unique)
-
-    '''
-    for row in properties:
-        properties_unique = row.split("|")
-    '''
-    '''
-    ds = smaller_data_set(ds,3333)
-    print (ds.head(5),ds.shape)
-    '''
-
-
-
-    #print(ds.tail(10))
-    #print (ds.shape[0])
-    #print(ds.columns)
-    #print(ds)
-    #s= ds.columns
-    #print(s)
-    #features = 'user_id,session_id,timestamp,step,action_type,reference,platform,city,country,device,current_filters,impressions,prices'
-    #features2= "user_id,session_id,timestamp,step,action_type,reference,platform,city,device,current_filters,impressions,prices"
-    #s.replace('"', '')
-    #columns = features.split(",")
-    #print(columns)
-    #print(ds)
-    #ds.columns=columns
-    #print(ds.columns)
-    #print("columns given\n",ds.head(10))
-    #prices = ds.prices#.apply(lambda x: x.split()[0])
-    #print (prices)
-    #id = ds.user_id
-    #ds = ds.drop(["id","carName"], axis=1)
-    #cols = ds.columns
-    #print (brand_names)
-    #ds.brand = brand_names
-    #print(ds)
-
-    #ds.loc[ds['brand'] == '', 'brand'] = ds.carName.str.split().str.get(0)
-    #col = ds.columns
-
-    #columns = ds.columns
-    #for c in columns:
-        #ds[c] = ds.apply(lambda row: missing_unknown(row[c]), axis=1)
-        #ds[c] = ds[c].astype("float")
-        #print (c)
-
-    '''
-    carName = ds["carName"]
-    carName.str.split().str.get(0)
-    clasz = ds["class"]
-    id = ds["id"]
-    ds = ds.drop(["class", "ID"], axis=1)
-    col = ds.columns
-    '''
-
-    #col = ds.columns
-    #imp = SimpleImputer(strategy="mean", missing_values=np.nan)
-    #imp = SimpleImputer(strategy="most_frequent")
-
-    #ds = pd.DataFrame(imp.fit_transform(ds))
-    #ds.columns = col
-
-
-    '''
-    print(ds)
-    ds = pd.concat([ds,id], axis=1)
-    ds = pd.concat([ds, clasz], axis=1)
-    print(ds)
-    '''
-    #ds.columns = columns
-    #ds = pd.concat([id,ds,brand_names], axis=1)
-    #brands = ds["carName"].unique()
-    #for brand in brands:
-    #    ds[brand] = ds.apply(lambda row: is_class_str(row["carName"], brand), axis=1)
-    #print(ds)
-    #ds.to_csv(target_path+'/preprocessed.csv', sep=',', index=False)
+    ds_sparse_matrix.to_csv(target_path+'item_metadata_sparse.csv', sep=',', index=False)
     return "done"
 
 def main():
