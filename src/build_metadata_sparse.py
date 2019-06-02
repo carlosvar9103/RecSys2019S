@@ -24,9 +24,9 @@ def get_data_preprocessed():
     ds = get_data_pure()
 
     ###JUST USE THIS TO WORK WITH A SMALLER item_metadata.csv DATASET###
-    #samples = round(len(ds)*0.001)
-    #print(samples)
-    #ds = smaller_data_set(ds,samples)
+    samples = round(len(ds)*0.1)
+    print(samples)
+    ds = smaller_data_set(ds,samples)
     #####END#####
 
     index = ds.index
@@ -49,7 +49,7 @@ def get_data_preprocessed():
 
     print (ds_sparse_matrix.head(10), ds_sparse_matrix.shape)
 
-    ds_sparse_matrix.to_csv(target_path+'item_metadata_sparse.csv', sep=',', index=False)
+    ds_sparse_matrix.to_csv(target_path+'sub_item_metadata_sparse.csv', sep=',', index=False)
 
     return "done"
 
