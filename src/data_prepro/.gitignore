@@ -6,7 +6,7 @@
 ############
 original*.csv
 test.csv
-train.csv
+#train.csv
 item_metadata_sparse.csv
 
 
